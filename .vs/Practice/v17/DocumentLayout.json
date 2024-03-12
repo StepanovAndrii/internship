@@ -1,16 +1,7 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Andrii Stepanov\\Desktop\\Practice\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{98217EA9-F19E-4B3B-97AC-5E8C8751F2EC}|Practice\\Practice.csproj|c:\\users\\andrii stepanov\\desktop\\practice\\practice\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{98217EA9-F19E-4B3B-97AC-5E8C8751F2EC}|Practice\\Practice.csproj|solutionrelative:practice\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{98217EA9-F19E-4B3B-97AC-5E8C8751F2EC}|Practice\\Practice.csproj|C:\\Users\\Andrii Stepanov\\Desktop\\Practice\\practice\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{98217EA9-F19E-4B3B-97AC-5E8C8751F2EC}|Practice\\Practice.csproj|solutionrelative:practice\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "WorkspaceRootPath": "C:\\Users\\anrub\\Desktop\\\u0443\u0447\u0435\u0431\u0430 2.0\\\u041F\u0440\u0430\u043A\u0442\u0438\u043A\u0430\\\u0417\u0430\u0434\u0430\u043D\u0438\u0435\\Project\\",
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -18,32 +9,43 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": -1,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "MainWindow.xaml",
-              "DocumentMoniker": "C:\\Users\\Andrii Stepanov\\Desktop\\Practice\\Practice\\MainWindow.xaml",
-              "RelativeDocumentMoniker": "Practice\\MainWindow.xaml",
-              "ToolTip": "C:\\Users\\Andrii Stepanov\\Desktop\\Practice\\Practice\\MainWindow.xaml",
-              "RelativeToolTip": "Practice\\MainWindow.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-03-12T16:48:42.363Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\Andrii Stepanov\\Desktop\\Practice\\Practice\\MainWindow.xaml.cs",
-              "RelativeDocumentMoniker": "Practice\\MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\Andrii Stepanov\\Desktop\\Practice\\Practice\\MainWindow.xaml.cs",
-              "RelativeToolTip": "Practice\\MainWindow.xaml.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-12T16:48:39.493Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:133:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             }
           ]
         }
