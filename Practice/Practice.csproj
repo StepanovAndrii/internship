@@ -107,6 +107,8 @@
     <Content Include="dll\GMap.NET.Core.dll" />
     <Content Include="dll\GMap.NET.WindowsForms.dll" />
     <Content Include="dll\GMap.NET.WindowsPresentation.dll" />
+    <Resource Include="places.txt" />
+    <Resource Include="images\marker.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
