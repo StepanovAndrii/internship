@@ -103,5 +103,10 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="dll\GMap.NET.Core.dll" />
+    <Content Include="dll\GMap.NET.WindowsForms.dll" />
+    <Content Include="dll\GMap.NET.WindowsPresentation.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
