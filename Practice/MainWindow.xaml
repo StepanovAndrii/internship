@@ -3,10 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:gmaps="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
         xmlns:local="clr-namespace:Practice"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Practice" Height="1000" Width="1000">
+    <Grid x:Name="Grid1" Background="PeachPuff">
+        <gmaps:GMapControl x:Name="gmap" Loaded="map_load" Margin="0,92,0,10"/>
+        <Button Content="Отобразить" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="122" Height="49" Click="Button_Click"/>
+        <Button Content="Убрать" HorizontalAlignment="Left" Margin="137,10,0,0" VerticalAlignment="Top" Width="122" Height="49" Click="Button_Click_1"/>
     </Grid>
 </Window>
