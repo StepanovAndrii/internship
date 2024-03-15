@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Practice.API;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,12 @@ namespace Practice
         public MainWindow()
         {
             InitializeComponent();
+            InitializeDataAsync();
+        }
+        private async void InitializeDataAsync()
+        {
+            ApiService apiService = new ApiService();
+            string a = await apiService.GetData("Солом'янська");
         }
     }
 }
