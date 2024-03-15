@@ -24,7 +24,7 @@ namespace Practice.API
         {
             _baseUrl = baseUrl;
         }
-        public async Task<string> GetData(string adress)
+        public async Task GetData(string adress)
         {
             try
             {
@@ -48,61 +48,22 @@ namespace Practice.API
                         throw new Exception();
                     }
                 }
-                return jsonDataInStringFormat;
+                ConvertStringJsonToObject(jsonDataInStringFormat);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return null;
             }
         }
-        /*
-                    JsonDocument jsonDocument = JsonDocument.Parse(json);
-                    JsonElement root = jsonDocument.RootElement;
-
-                    List<Dictionary<string, object>> jsonArray = new List<Dictionary<string, object>>();
-
-                    if (root.ValueKind == JsonValueKind.Array)
-                    {
-                        foreach (JsonElement element in root.EnumerateArray())
-                        {
-                            Dictionary<string, object> dict = new Dictionary<string, object>();
-
-                            foreach (JsonProperty prop in element.EnumerateObject())
-                            {
-                                dict.Add(prop.Name, GetValue(prop.Value));
-                            }
-
-                            jsonArray.Add(dict);
-                        }
-                    }
-                    foreach (var item in jsonArray)
-                    {
-                        foreach (var kvp in item)
-                        {
-                            Console.WriteLine($"{kvp.Key}: {kvp.Value}");
-                        }
-                        Console.WriteLine();
-                    }
-        */
-        static object GetValue(JsonElement element)
+        public void ConvertStringJsonToObject(string json)
         {
-            switch (element.ValueKind)
+            try
             {
-                case JsonValueKind.Number:
-                    if (element.TryGetInt32(out int intValue))
-                        return intValue;
-                    if (element.TryGetDouble(out double doubleValue))
-                        return doubleValue;
-                    return element.GetDecimal();
-                case JsonValueKind.String:
-                    return element.GetString();
-                case JsonValueKind.True:
-                    return true;
-                case JsonValueKind.False:
-                    return false;
-                default:
-                    throw new NotSupportedException($"Unsupported JSON value kind: {element.ValueKind}");
+                var jsonArray = JsonSerializer.Deserialize<object[]>(json);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
         }
     }

@@ -24,12 +24,12 @@ namespace Practice
         public MainWindow()
         {
             InitializeComponent();
-            InitializeDataAsync();
+            InitializeData();
         }
-        private async void InitializeDataAsync()
+        private void InitializeData()
         {
             ApiService apiService = new ApiService();
-            string a = await apiService.GetData("Солом'янська");
+            _ = apiService.GetData("Солом'янська");
         }
     }
 }
