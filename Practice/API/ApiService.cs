@@ -1,70 +1,47 @@
-﻿
-using System;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-
+﻿using System;
+using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace Practice.API
 {
     internal class ApiService
     {
-        // Fields
+        // ----------------------------------------------- Fields -------------------------------------------------------
+        // A field that stores the path that is taken as a basis in the request.
         private string _baseUrl;
 
-        // Constructors
-        public ApiService(string baseUrl = "https://nominatim.openstreetmap.org/")
+
+        // --------------------------------------------- Constructors ---------------------------------------------------
+        // A single constructor with a base url parameter.
+        public ApiService(string baseUrl)                                                                      
         {
-            _baseUrl = baseUrl;
+            _baseUrl = ValidateURL(baseUrl);                                     
         }
 
-        // Methods
-        public void ChangeBaseUrl(string baseUrl)
+        // --------------------------------------------- Properties -----------------------------------------------------
+        // A property that allows you to get the private field of the base url and replace the value with another one.
+        public string BaseUrl
         {
-            _baseUrl = baseUrl;
+            get => _baseUrl;
+            set => _baseUrl = ValidateURL(value);
         }
-        public async Task GetData(string adress)
+
+        // ---------------------------------------------- Methods -------------------------------------------------------
+        // The method responsible for the get request, its structure and settings.
+        public void SendGetRequest(params string[] prameters)
         {
-            try
-            {
-                string userAgentInfo = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36";
-                string jsonDataInStringFormat;
 
-                using (HttpClient client = new HttpClient())
-                {
-                    client.DefaultRequestHeaders.Add("User-Agent", userAgentInfo);
-                    Uri endpoint = new Uri($"{_baseUrl}search?q={adress}&format=json&addressdetails=0");
-
-                    var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-
-                    HttpResponseMessage response = await client.GetAsync(endpoint, cts.Token);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        jsonDataInStringFormat = await response.Content.ReadAsStringAsync();
-                    }
-                    else
-                    {
-                        throw new Exception();
-                    }
-                }
-                ConvertStringJsonToObject(jsonDataInStringFormat);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
         }
-        public void ConvertStringJsonToObject(string json)
+
+        // A method that checks the correctness of the URL.
+        private string ValidateURL(string url)
         {
-            try
+            if (!Regex.Match(url, "^http(s)?://([\\w-]+.)+[\\w-]+(/[\\w- ./?%&=])?$").Success)
             {
-                var jsonArray = JsonSerializer.Deserialize<object[]>(json);
+                MessageBox.Show("You have provided a base URL in an incorrect format", "Provision of data", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
+            return url;
         }
     }
 }

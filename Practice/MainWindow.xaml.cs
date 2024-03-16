@@ -24,12 +24,7 @@ namespace Practice
         public MainWindow()
         {
             InitializeComponent();
-            InitializeData();
-        }
-        private void InitializeData()
-        {
-            ApiService apiService = new ApiService();
-            _ = apiService.GetData("Солом'янська");
+            ApiService apiService = new ApiService("https://nominatim.openstreetmap.org/");
         }
     }
 }
