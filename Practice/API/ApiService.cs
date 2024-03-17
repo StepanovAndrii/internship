@@ -13,16 +13,21 @@ namespace Practice.API
     {
         private string _baseUrl;
 
-        public ApiService(string baseUrl)                                                                      
+        public ApiService(string baseUrl)
         {
-            _baseUrl = ValidateURL(baseUrl);                                    
+            if (!ValidateURL(baseUrl))
+            {
+                MessageBox.Show("Неправильний формат базового url. Для виходу з додатку натисність кнопку \"OK\".", "Practice.exe - Помилка додатку", MessageBoxButton.OK, MessageBoxImage.Stop, MessageBoxResult.None, MessageBoxOptions.None);
+                Application.Current.Shutdown();
+            }
+            _baseUrl = baseUrl;
         }
 
-        public string BaseUrl
-        {
-            get => _baseUrl ?? "none";
-            set => _baseUrl = ValidateURL(value);
-        }
+        //public string BaseUrl
+        //{
+        //    get => _baseUrl ?? "none";
+        //    set => _baseUrl = ValidateURL(value);
+        //}
 
         public void SendRequest()
         {
@@ -131,14 +136,9 @@ namespace Practice.API
             return uriBuilder.Uri;
         }
 
-        private string ValidateURL(string url)
+        private bool ValidateURL(string url)
         {
-            if (!Regex.Match(url, "^http(s)?://([\\w-]+.)+[\\w-]+(/[\\w- ./?%&=])?$").Success)
-            {
-                MessageBox.Show("You have provided a base URL in an incorrect format", "Provision of data", MessageBoxButton.OK, MessageBoxImage.Error);;
-                return null;
-            }
-            return url;
+            return Regex.IsMatch(url, @"^http(s)?://([\w-]+.)+[\w-]+(/[\w- ./?%&=])?$");
         }
     }
 }
