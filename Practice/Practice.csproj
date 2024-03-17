@@ -114,6 +114,7 @@
   <ItemGroup>
     <Compile Include="Models\Accident.cs" />
     <Compile Include="Models\AccidentContext.cs" />
+    <Compile Include="Models\DbController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

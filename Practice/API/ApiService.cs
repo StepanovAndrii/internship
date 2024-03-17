@@ -1,10 +1,11 @@
-﻿using System;
+﻿using System.Text.RegularExpressions;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Text.RegularExpressions;
-using System.Windows;
 using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using Practice.Models;
+using System.Windows;
+using System.Net;
+using System;
 
 namespace Practice.API
 {
@@ -44,7 +45,7 @@ namespace Practice.API
                         receivedJsonList.Add(token); 
                     }
 
-                    MessageBox.Show(DeterminePriority(jsonArray)["osm_id"].ToString()??"null", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    DbController.AddAccident(DeterminePriority(jsonArray));
                 }
                 else
                 {
@@ -79,7 +80,7 @@ namespace Practice.API
 
             foreach (JObject json in jsonDataArray)
             {
-                if (json["addresstype"].ToString() == "road" || json["addresstype"].ToString() == "hightway")
+                if (json["addresstype"].ToString() == "road" || json["addresstype"].ToString() == "highway")
                 {
                     init.Add(jsonDataArray.IndexOf(json));
                 }
