@@ -24,7 +24,8 @@ namespace Practice
         public MainWindow()
         {
             InitializeComponent();
-            ApiService apiService = new ApiService("https://nominatim.openstreetmap.org/");
+            ApiService apiService = new ApiService("https://nominatim.openstreetmap.org");
+            apiService.SendRequest();
         }
     }
 }
