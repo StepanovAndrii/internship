@@ -32,7 +32,7 @@ namespace Practice.API
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "Practice/1.0 (WPF)");
                 _httpClient.BaseAddress = new Uri(_baseUrl);
 
-                HttpResponseMessage response = _httpClient.GetAsync(CreateRequestURI("q=соломенская", "format=json", "addressdetails=0")).Result;
+                HttpResponseMessage response = _httpClient.GetAsync(CreateRequestURI("q=берестейський проспект", "format=json", "addressdetails=0")).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -44,7 +44,7 @@ namespace Practice.API
                         receivedJsonList.Add(token); 
                     }
 
-                    MessageBox.Show((string)(receivedJsonList[0]["osm_id"]), "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(DeterminePriority(jsonArray)["osm_id"].ToString()??"null", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
@@ -69,6 +69,55 @@ namespace Practice.API
             uriBuilder.Query = queryString;
 
             return uriBuilder.Uri;
+        }
+        private JObject DeterminePriority(JArray jsonDataArray)
+        {
+            List<int> init = new List<int>();
+            int priority = -1;
+            int position = -1;
+            int temporaryPriority = -1;
+
+            foreach (JObject json in jsonDataArray)
+            {
+                if (json["addresstype"].ToString() == "road" || json["addresstype"].ToString() == "hightway")
+                {
+                    init.Add(jsonDataArray.IndexOf(json));
+                }
+            }
+            for (int i = 0; i < init.Count; i++)
+            {
+                switch (jsonDataArray[init[i]]["type"].ToString())
+                {
+                    case "primary":
+                        return (JObject)jsonDataArray[i];
+                    case "trunk":
+                        temporaryPriority = 5;
+                        break;
+                    case "secondary":
+                        temporaryPriority = 4;
+                        break;
+                    case "bus_stop":
+                        temporaryPriority = 3;
+                        break;
+                    case "residential":
+                        temporaryPriority = 2;
+                        break;
+                    case "tertiary":
+                        temporaryPriority = 1;
+                        break;
+                }
+                if (temporaryPriority > priority)
+                {
+                    priority = temporaryPriority;
+                    position = i;
+                }
+            }
+            if(position == -1)
+            {
+                MessageBox.Show("Не було знайдено підходячого варіанту", "Запит", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return null;
+            }
+            return (JObject)jsonDataArray[position];
         }
 
         private Uri CreateRequestURI(params string[] parameters)
