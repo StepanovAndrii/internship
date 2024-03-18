@@ -1,42 +1,47 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using Practice.Models;
 using System.Windows;
 using System.Net;
-using System;
-using System.Diagnostics;
 
 namespace Practice.API
 {
-    internal class ApiService
+    internal class HttpApiService
     {
         private string _baseUrl;
+        private static readonly Lazy<HttpApiService> lazy = new Lazy<HttpApiService>(() => new HttpApiService());
 
-        public ApiService(string baseUrl)
+        public static HttpApiService Instance { get { return lazy.Value; } }
+        private HttpApiService() { }
+
+        public static HttpApiService CreateInstance(string baseUrl)
         {
-            try
+            var instance = new HttpApiService();
+            if (UrlValidator.ValidateURL(baseUrl))
             {
-                throw new Exception();
+                instance._baseUrl = baseUrl;
             }
-            catch (Exception ex)
+            else
             {
-                ErrorHandler.ExitWithError("Неправильний формат базового url.");
+                DialogManager.DisplayQuestion("Неправильний формат базового URL.");
             }
+            return instance;
         }
 
         public string BaseUrl
         {
             get => _baseUrl;
-            set { 
-                try
+            set
+            {
+                if (UrlValidator.ValidateURL(value))
                 {
-                    throw new Exception();
+                    _baseUrl = value;
                 }
-                catch (Exception ex)
+                else
                 {
-                    ErrorHandler.ExitWithError("Неправильний формат базового url.");
+                    DialogManager.ExitWithError("Неправильний формат базового URL.");
                 }
             }
         }
@@ -54,40 +59,40 @@ namespace Practice.API
 
                 if (response.IsSuccessStatusCode)
                 {
-                    string jsonResponse = response.Content.ReadAsStringAsync().Result;
-                    JArray jsonArray = JArray.Parse(jsonResponse); 
-
-                    foreach (JObject token in jsonArray)
-                    {
-                        receivedJsonList.Add(token); 
-                    }
-
-                    DbController.AddAccident(DeterminePriority(jsonArray));
+                    ProcessResponse(response, receivedJsonList);
                 }
                 else
                 {
-                    MessageBox.Show($"Error: {response.StatusCode}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    HandleErrorResponse(response);
                 }
             }
         }
 
-        private Uri CreateRequestURI(Dictionary<string, string> parameters)
+        private void ProcessResponse(HttpResponseMessage response, List<JObject> receivedJsonList)
         {
-            UriBuilder uriBuilder = new UriBuilder(_baseUrl + "/search");
+            string jsonResponse = response.Content.ReadAsStringAsync().Result;
+            JArray jsonArray = JArray.Parse(jsonResponse);
 
-            List<string> parameterList = new List<string>();
-            foreach (var parameter in parameters)
+            foreach (JObject token in jsonArray)
             {
-                string encodedValue = WebUtility.UrlEncode(parameter.Value);
-                string encodedParameter = $"{parameter.Key}={encodedValue}";
-                parameterList.Add(encodedParameter);
+                receivedJsonList.Add(token);
             }
 
-            string queryString = string.Join("&", parameterList);
-            uriBuilder.Query = queryString;
+            DbController.AddAccident(DeterminePriority(jsonArray));
+        }
 
+        private void HandleErrorResponse(HttpResponseMessage response)
+        {
+            MessageBox.Show($"Error: {response.StatusCode}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private Uri CreateRequestURI(params string[] parameters)
+        {
+            UriBuilder uriBuilder = new UriBuilder(_baseUrl + "/search");
+            uriBuilder.Query = string.Join("&", parameters);
             return uriBuilder.Uri;
         }
+
         private JObject DeterminePriority(JArray jsonDataArray)
         {
             List<int> init = new List<int>();
@@ -130,27 +135,12 @@ namespace Practice.API
                     position = i;
                 }
             }
-            if(position == -1)
+            if (position == -1)
             {
                 MessageBox.Show("Не було знайдено підходячого варіанту", "Запит", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return null;
             }
             return (JObject)jsonDataArray[position];
-        }
-
-        private Uri CreateRequestURI(params string[] parameters)
-        {
-            UriBuilder uriBuilder = new UriBuilder(_baseUrl + "/search");
-
-            string queryString = string.Join("&", parameters);
-            uriBuilder.Query = queryString;
-
-            return uriBuilder.Uri;
-        }
-
-        private bool ValidateURL(string url)
-        {
-            return Regex.IsMatch(url, @"^http(s)?://([\w-]+.)+[\w-]+(/[\w- ./?%&=])?$");
         }
     }
 }
