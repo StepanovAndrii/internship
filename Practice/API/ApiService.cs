@@ -17,8 +17,7 @@ namespace Practice.API
         {
             if (!ValidateURL(baseUrl))
             {
-                MessageBox.Show("Неправильний формат базового url. Для виходу з додатку натисність кнопку \"OK\".", "Practice.exe - Помилка додатку", MessageBoxButton.OK, MessageBoxImage.Stop, MessageBoxResult.None, MessageBoxOptions.None);
-                Application.Current.Shutdown();
+                ErrorHandler.DisplayAndShutdownOnError("Неправильний формат базового url");
             }
             _baseUrl = baseUrl;
         }

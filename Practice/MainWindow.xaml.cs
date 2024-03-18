@@ -1,4 +1,5 @@
-﻿using Practice.Models;
+﻿using Practice.API;
+using Practice.Models;
 using System.Windows;
 
 namespace Practice
@@ -11,6 +12,7 @@ namespace Practice
         public MainWindow()
         {
             InitializeComponent();
+            ApiService apiService = new ApiService("");
         }
     }
 }
