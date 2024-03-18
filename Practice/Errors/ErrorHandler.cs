@@ -1,5 +1,6 @@
-﻿using System.IO;
-using System.Reflection;
+﻿using System;
+using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace Practice
@@ -7,36 +8,39 @@ namespace Practice
     internal static class ErrorHandler
     {
         /// <summary>
-        /// Виводить повідомлення про помилку та зупиняє роботу додатка.
-        /// </summary>
-        /// <param name="errorMessage">Повідомлення, яке розписує проблему.</param>
-        public static void DisplayAndShutdownOnError(string errorMessage)
-        {
-            DisplayError(errorMessage);
-            ShutdownApp();
-        }
-
-        /// <summary>
         /// Виводить повідомлення про помилку.
         /// </summary>
-        /// <param name="message">Повідомлення, яке розписує проблему.</param>
-        public static void DisplayError(string errorMessage)
+        /// <param name="message">Повідомлення яке потрібно вивести.</param>
+        public static void DisplayError(string message)
         {
-            string applicationName = Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location);
-            string applicationExtension = Path.GetExtension(Assembly.GetEntryAssembly().Location);
-
-            MessageBox.Show($"{errorMessage}. Для виходу з додатку натисніть кнопку \"OK\".", // Повідомлення про помилку
-                            $"{applicationName}{applicationExtension} - Application Error", // Заголовок повідомлення
-                            MessageBoxButton.OK, // Кнопка "ОК" для закриття повідомлення
-                            MessageBoxImage.Stop); // Червоний знак зупинки, який вказує на критичну помилку або проблему, що призводить до зупинки
+            DisplayErrorInternal(message);
         }
 
         /// <summary>
-        /// Закінчує роботу та закриває додаток.
+        /// Виводить повідомлення і зупиняє роботу додатку.
         /// </summary>
-        public static void ShutdownApp() 
+        /// <param name="message">Повідомлення яке потрібно вивести.</param>
+        public static void ExitWithError(string message)
         {
+            DisplayErrorInternal(message);
             Application.Current.Shutdown();
+        }
+
+        private static void DisplayErrorInternal(string message, // Повідомлення яке виведеться з помилкою
+                                        [CallerMemberName] string callerMemberName = "", // Назва методу з якого визвалась помилка
+                                        [CallerFilePath] string callerFilePath = "", // Шлях до файлу з якого визвалась помилка
+                                        [CallerLineNumber] int callerLineNumber = 0) // Номер рядку з якого визвалась помилка
+        {
+            string fileName = Path.GetFileName(callerFilePath); // Отримується файл з його розширенням з якого визвали помилку
+            string errorMessage = $"Файл: {fileName} \n" +
+                                  $"Метод: {callerMemberName} \n" +
+                                  $"Рядок: {callerLineNumber} \n\n" +
+                                  $"{message}";
+
+            MessageBox.Show(errorMessage, 
+                            "Повідомлення про помилку",
+                            MessageBoxButton.OK, // Кнопка "OK" для закриття помилки
+                            MessageBoxImage.Error); // Вид повідомлення - помилка
         }
     }
 }

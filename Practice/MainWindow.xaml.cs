@@ -12,7 +12,7 @@ namespace Practice
         public MainWindow()
         {
             InitializeComponent();
-            ApiService apiService = new ApiService("");
+            ApiService apiService = new ApiService("https://nominatim.openstreetmap.org");
         }
     }
 }

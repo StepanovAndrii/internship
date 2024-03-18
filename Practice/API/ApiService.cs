@@ -6,6 +6,7 @@ using Practice.Models;
 using System.Windows;
 using System.Net;
 using System;
+using System.Diagnostics;
 
 namespace Practice.API
 {
@@ -15,18 +16,30 @@ namespace Practice.API
 
         public ApiService(string baseUrl)
         {
-            if (!ValidateURL(baseUrl))
+            try
             {
-                ErrorHandler.DisplayAndShutdownOnError("Неправильний формат базового url");
+                throw new Exception();
             }
-            _baseUrl = baseUrl;
+            catch (Exception ex)
+            {
+                ErrorHandler.ExitWithError("Неправильний формат базового url.");
+            }
         }
 
-        //public string BaseUrl
-        //{
-        //    get => _baseUrl ?? "none";
-        //    set => _baseUrl = ValidateURL(value);
-        //}
+        public string BaseUrl
+        {
+            get => _baseUrl;
+            set { 
+                try
+                {
+                    throw new Exception();
+                }
+                catch (Exception ex)
+                {
+                    ErrorHandler.ExitWithError("Неправильний формат базового url.");
+                }
+            }
+        }
 
         public void SendRequest()
         {
