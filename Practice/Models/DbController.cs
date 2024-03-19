@@ -40,13 +40,14 @@ namespace Practice.Models
                                 Accident finalData = new Accident(name, description, lon, lat);
                                 database.Accidents.Add(finalData);
                                 await database.SaveChangesAsync();
+                                DialogManager.DisplayInfo("Аварію було додано.");
                             }
                         }
                     }
                 }
                 catch (Exception)
                 {
-                    DialogManager.DisplayError($"Під час виконання сталася помилка."); // Виведення помилки про те, що під час виконання сталась якась невідома помилка
+                    DialogManager.ExitWithError($"Під час виконання сталася помилка."); // Виведення помилки про те, що під час виконання сталась якась невідома помилка і вихід з додатку
                 }
             }
         }
@@ -65,7 +66,7 @@ namespace Practice.Models
                 }
                 catch(Exception)
                 {
-                    DialogManager.DisplayError($"Під час виконання сталася помилка.");
+                    DialogManager.ExitWithError($"Під час виконання сталася помилка.");
                     return Enumerable.Empty<Accident>(); // При помилці повертає пустий IEnumerable.
                 }
             }
@@ -89,7 +90,7 @@ namespace Practice.Models
                     }
                     catch (Exception)
                     {
-                        DialogManager.DisplayError($"Під час виконання сталася помилка.");
+                        DialogManager.ExitWithError($"Під час виконання сталася помилка.");
                     }
                 }
             }

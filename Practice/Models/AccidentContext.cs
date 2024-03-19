@@ -11,7 +11,7 @@ namespace Practice.Models
         {
             try
             {
-                InitializeAsync().Wait(10000);
+                InitializeAsync();
             }
             catch (TimeoutException)
             {
@@ -19,11 +19,11 @@ namespace Practice.Models
             }
             catch (Exception)
             {
-                DialogManager.DisplayError("Під час виконання сталася невідома помилка.");
+                DialogManager.ExitWithError("Під час виконання сталася невідома помилка.");
             }
         }
 
-        private async Task InitializeAsync()
+        private async void InitializeAsync()
         {
             try
             {
@@ -31,7 +31,7 @@ namespace Practice.Models
             }
             catch (Exception)
             {
-                DialogManager.DisplayError("Під час виконання сталася невідома помилка.");
+                DialogManager.ExitWithError("Під час виконання сталася невідома помилка.");
             }
         }
 
@@ -42,7 +42,7 @@ namespace Practice.Models
                 await Database.Connection.OpenAsync(); 
                 if (Database.Connection.State != ConnectionState.Open)
                 {
-                    DialogManager.DisplayError("Не вдалось з'єднатись з базою даних.");
+                    DialogManager.ExitWithError("Не вдалось з'єднатись з базою даних.");
                 }
             }
         }

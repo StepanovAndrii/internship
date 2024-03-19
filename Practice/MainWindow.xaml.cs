@@ -1,5 +1,5 @@
 ﻿using Practice.API;
-using Practice.Models;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace Practice
@@ -13,7 +13,17 @@ namespace Practice
         {
             InitializeComponent();
             HttpApiService apiService = HttpApiService.CreateInstance("https://nominatim.openstreetmap.org");
-            apiService.SendRequest("Україна", "Київ", "Солом'янська", "Круте місце");
+            apiService.PutOrEditData("Україна", "Київ", "Солом'янська", "Зе бест місце");
+            List<string> subdirectories = new List<string>
+            {
+                "search"
+            };
+            Dictionary<string, string> keyValuePairs = new Dictionary<string, string>
+            {
+                {"format", "json"},
+                {"addressdetails", "0"}
+            };
+            apiService.SendRequest(subdirectories, keyValuePairs);
         }
     }
 }
