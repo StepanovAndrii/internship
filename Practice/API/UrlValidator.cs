@@ -8,10 +8,11 @@ namespace Practice
         /// Перевіряє рядок на правильний формат посилання.
         /// </summary>
         /// <param name="url">Рядок з посиланням для перевірки.</param>
-        /// <returns>Булеве значення на відповідь "чи дотримано стандартів форматування".</returns>
+        /// <returns>Чи відповідає рядок формату посилання.</returns>
         public static bool ValidateURL(string url)
         {
-            return Regex.IsMatch(url, @"^http(s)?://([\w-]+.)+[\w-]+(/[\w- ./?%&=])?$");
+            // Використовує регулярний вираз для перевірки формату посилання
+            return Regex.IsMatch(url, @"^http(s)?:\/\/[\w\-]+(\.[\w\-]+)*(\/[\w\-]*)*$");
         }
     }
 }

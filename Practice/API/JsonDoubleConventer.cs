@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Practice.API
@@ -10,14 +6,10 @@ namespace Practice.API
     internal static class JsonDoubleConverter
     {
         /// <summary>
-        /// Змінює json double в double під C#.
+        /// Конвертує рядок, який представляє double з формату JSON у double для C#.
         /// </summary>
-        /// <remarks>
-        /// Double в json форматі як розділяючий знак використовує символ ",". В C# це не мало б змісту, бо замість цього використовується символ ".".
-        /// Для цього і використовується цей метод, щоб замінити символ "," на символ ".".
-        /// </remarks>
-        /// <param name="doubleNumber">Рядок який містить в собі тип double витягнутий з json об'єкта.</param>
-        /// <returns>Перероблений double під C#.</returns>
+        /// <param name="doubleNumber">Рядок, що містить double у форматі JSON.</param>
+        /// <returns>Double значення, конвертоване з JSON у формат для C#.</returns>
         public static double Convert(string doubleNumber)
         {
             try
@@ -26,12 +18,12 @@ namespace Practice.API
             }
             catch (FormatException)
             {
-                DialogManager.DisplayError("Неправильний формат отриманих даних.");
+                DialogManager.Notify("Неправильний формат отриманих даних.", MessageBoxImage.Error, MessageBoxButton.OK);
                 return double.NaN;
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                DialogManager.DisplayError($"Невідома помилка: {exception.Message}");
+                DialogManager.Notify("Невідома помилка.", MessageBoxImage.Error, MessageBoxButton.OK);
                 return double.NaN;
             }
         }

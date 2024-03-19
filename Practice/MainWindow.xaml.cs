@@ -12,23 +12,12 @@ namespace Practice
         public MainWindow()
         {
             InitializeComponent();
-            InitializeHttpApiService(); // Ініціалізуємо HttpApiService
-            SendHttpRequest(); // Відправляємо запит
-        }
-
-        private void InitializeHttpApiService()
-        {
-            string baseUrl = "https://nominatim.openstreetmap.org";
-            HttpApiService.Instance.Initialize(baseUrl);
-            HttpApiService.Instance.PutOrEditData("Україна", "Київ", "Солом'янська", "Опис");
+            HttpApiService.Instance.BaseUrl = "https://nominatim.openstreetmap.org";
             HttpApiService.Instance.AddRequestParameter("format", "json");
             HttpApiService.Instance.AddRequestParameter("addressdetails", "0");
-        }
-
-        private void SendHttpRequest()
-        {
-            IEnumerable<string> subdirectories = new List<string> { "search" };
-            HttpApiService.Instance.SendRequest(subdirectories);
-        }
+            HttpApiService.Instance.PutOrEditData("Україна", "Київ", "Миколи Міхновського", "ДТП на ній");
+            HttpApiService.Instance.AddSearchRequestParameter();
+            HttpApiService.Instance.SendRequest("Practice", 1.0, "WPF");
+        }        
     }
 }
