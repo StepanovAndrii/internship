@@ -1,10 +1,6 @@
-﻿using System.Text;
+﻿using Practice.API;
+using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using System.Net;
 
 //using System.Device.Location
 
@@ -20,6 +16,9 @@ using System.Text.Json;
 
 namespace Practice
 {
+    /// <summary>
+    /// Логіка взаємодії для MainWindow.xaml
+    /// </summary>
     public partial class MainWindow : Window
     {
         public class CPoint
@@ -39,6 +38,23 @@ namespace Practice
         public MainWindow()
         {
             InitializeComponent();
+            InitializeHttpApiService(); // Ініціалізуємо HttpApiService
+            SendHttpRequest(); // Відправляємо запит
+        }
+
+        private void InitializeHttpApiService()
+        {
+            string baseUrl = "https://nominatim.openstreetmap.org";
+            HttpApiService.Instance.Initialize(baseUrl);
+            HttpApiService.Instance.PutOrEditData("Україна", "Київ", "Солом'янська", "Опис");
+            HttpApiService.Instance.AddRequestParameter("format", "json");
+            HttpApiService.Instance.AddRequestParameter("addressdetails", "0");
+        }
+
+        private void SendHttpRequest()
+        {
+            IEnumerable<string> subdirectories = new List<string> { "search" };
+            HttpApiService.Instance.SendRequest(subdirectories);
         }
 
         private void map_load(object sender, EventArgs e)
