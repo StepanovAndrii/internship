@@ -1,24 +1,49 @@
 ﻿using System;
 using System.Data;
 using System.Data.Entity;
+using System.Threading.Tasks;
 
 namespace Practice.Models
 {
     internal class AccidentContext : DbContext
     {
-        public AccidentContext() : base(nameOrConnectionString: "DbConnection") {
+        public AccidentContext() : base("DbConnection")
+        {
             try
             {
-                Database.Connection.Open(); 
-                var connection = Database.Connection.State;
-                if (connection != ConnectionState.Open)
-                {
-                    Practice.DialogManager.ExitWithError("Помилка підключення до бази даних. Стан підключення: " + connection);
-                }
+                InitializeAsync().Wait(10000);
             }
-            catch (Exception exception)
+            catch (TimeoutException)
             {
-                Practice.DialogManager.ExitWithError("Непередбачена помилка: " + exception.Message);
+                DialogManager.ExitWithError("Час очікування з'єднання з сервером вийшов.");
+            }
+            catch (Exception)
+            {
+                DialogManager.DisplayError("Під час виконання сталася невідома помилка.");
+            }
+        }
+
+        private async Task InitializeAsync()
+        {
+            try
+            {
+                await OpenConnectionAsync();
+            }
+            catch (Exception)
+            {
+                DialogManager.DisplayError("Під час виконання сталася невідома помилка.");
+            }
+        }
+
+        private async Task OpenConnectionAsync()
+        {
+            if (Database.Connection.State != ConnectionState.Open)
+            {
+                await Database.Connection.OpenAsync(); 
+                if (Database.Connection.State != ConnectionState.Open)
+                {
+                    DialogManager.DisplayError("Не вдалось з'єднатись з базою даних.");
+                }
             }
         }
 

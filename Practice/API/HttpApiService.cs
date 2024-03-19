@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using Practice.Models;
-using System.Windows;
-using System.Net;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
 
 namespace Practice.API
 {
@@ -25,7 +25,7 @@ namespace Practice.API
             }
             else
             {
-                DialogManager.DisplayQuestion("Неправильний формат базового URL.");
+                DialogManager.DisplayError("Неправильний формат базового URL.");
             }
             return instance;
         }
@@ -46,101 +46,116 @@ namespace Practice.API
             }
         }
 
-        public void SendRequest()
+        public void SendRequest(string country, string city, string street, string description)
         {
-            List<JObject> receivedJsonList = new List<JObject>();
-
-            using (HttpClient _httpClient = new HttpClient())
+            List<JObject> receivedJSON;
+            Dictionary<string, string> parameters = new Dictionary<string, string>
             {
-                _httpClient.DefaultRequestHeaders.Add("User-Agent", "Practice/1.0 (WPF)");
-                _httpClient.BaseAddress = new Uri(_baseUrl);
+                { "format", "json" },
+                { "addressdetails", "0" },
+                { "q", $"{country} {city} {street}" }
+            };
 
-                HttpResponseMessage response = _httpClient.GetAsync(CreateRequestURI("q=берестейський проспект", "format=json", "addressdetails=0")).Result;
+            using (HttpClient httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Add("User-Agent", "Practice/1.0 (WPF)");
+
+                Uri finalUri = CreateRequestURI(parameters, "search");
+                HttpResponseMessage response = httpClient.GetAsync(finalUri).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
-                    ProcessResponse(response, receivedJsonList);
+                    string jsonResponse = response.Content.ReadAsStringAsync().Result;
+                    receivedJSON = JsonConvert.DeserializeObject<List<JObject>>(jsonResponse);
+                    ProcessResponse(response, receivedJSON, "my desc");
                 }
                 else
                 {
-                    HandleErrorResponse(response);
+                    
                 }
             }
         }
 
-        private void ProcessResponse(HttpResponseMessage response, List<JObject> receivedJsonList)
+        private void ProcessResponse(HttpResponseMessage response, List<JObject> receivedJsonList, string description)
         {
             string jsonResponse = response.Content.ReadAsStringAsync().Result;
             JArray jsonArray = JArray.Parse(jsonResponse);
 
-            foreach (JObject token in jsonArray)
+            foreach (JObject json in jsonArray)
             {
-                receivedJsonList.Add(token);
+                receivedJsonList.Add(json);
             }
 
-            DbController.AddAccident(DeterminePriority(jsonArray));
+            // DbController.AddAccident(FindHighestPriorityObjectByValues(jsonArray, key: "type", "primary", "trunk", "secondary", "bus_stop", "residential", "tetriary", "pedestrian"), description);
         }
 
-        private void HandleErrorResponse(HttpResponseMessage response)
+        /// <summary>
+        /// Створює повний запит на сервер.
+        /// </summary>
+        /// <param name="parameterKeyValues">Структура даних виду "ключ-значення" в яку вноситься ключі і відповідні їм значення (параметри запиту).</param>
+        /// <param name="subdirectories">Шлях, по якому треба пройти додатково від базового. Відокремлюються символом "/".</param>
+        /// <returns>Повністю готовий остаточний варіант url.</returns>
+        private Uri CreateRequestURI(IDictionary<string, string> parameterKeyValues, params string[] subdirectories)
         {
-            MessageBox.Show($"Error: {response.StatusCode}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            UriBuilder uri = new UriBuilder(BaseUrl); // Ініціалізація uri з базовим шляхом в основі
+
+            uri.Path = string.Join("/", subdirectories); // Об'єднує піддиректорії символом "/"
+            uri.Query = string.Join("&", parameterKeyValues.Select(kv => $"{kv.Key}={kv.Value}")); // Об'єднує параметри ключ-значення символом "&"
+
+            return uri.Uri;
         }
 
-        private Uri CreateRequestURI(params string[] parameters)
+        /// <summary>
+        /// Знаходить перший JSON який підійшов по умові (має значення ключа яке є в наданому перечисленні <paramref name="priorityList"/>
+        /// </summary>
+        /// <remarks>Є обгорткою-перегрузом навколо оригінального методу. Порядок наданих значень має значення.</remarks>
+        /// <param name="jsonArray">Список json об'єктів черед яких буде шукатись підходящий.</param>
+        /// <param name="key">Ключ, по якому будуть перебиратись підходящі значення.</param>
+        /// <param name="priorityList">Не обов'язкові параметри (массив) усіх підходящих умові значень.</param>
+        /// <returns>JSON об'єкт який перший підійде по значенням з параметру <paramref name="priorityList"/>.</returns>
+        private JObject FindHighestPriorityObjectByValues(JArray jsonArray, string key, params string[] priorityList)
         {
-            UriBuilder uriBuilder = new UriBuilder(_baseUrl + "/search");
-            uriBuilder.Query = string.Join("&", parameters);
-            return uriBuilder.Uri;
+            return FindHighestPriorityObjectByValues(jsonArray, key, priorityList.ToList<string>());
         }
 
-        private JObject DeterminePriority(JArray jsonDataArray)
+        /// <summary>
+        /// Знаходить перший JSON який підійшов по умові (має значення ключа яке є в наданому перечисленні <paramref name="priorityList"/>). 
+        /// </summary>
+        /// <remarks>В більшості випадків враховується порядок в <paramref name="priorityList"/>. Значення яке буде найперше - буде найпріорітетнішим.</remarks>
+        /// <param name="jsonArray">Список json об'єктів черед яких буде шукатись підходящий.</param>
+        /// <param name="key">Ключ, по якому будуть перебиратись підходящі значення.</param>
+        /// <param name="priorityList">Список усіх підходящих умові значень.</param>
+        /// <returns>JSON об'єкт який перший підійде по значенням з параметру <paramref name="priorityList"/>.</returns>
+        private JObject FindHighestPriorityObjectByValues(JArray jsonArray, string key, IEnumerable<string> priorityList)
         {
-            List<int> init = new List<int>();
-            int priority = -1;
-            int position = -1;
-            int temporaryPriority = -1;
+            JObject answer;
+            foreach (string value in priorityList) // Проходимось по кожному значенню
+            {
+                answer = FindSuitableJsonObject(jsonArray, key, value);
+                if (answer.HasValues) // Перевіряємо чи знайшли ми щось (чи не пустий). Якщо знайшли - виходимо з методу і повертаємо цей об'єкт
+                {
+                    return answer; 
+                }
+            }
+            return new JObject(); // Якщо все таки не вийшло знайти потрібного - повертаємо пустий
+        }
 
-            foreach (JObject json in jsonDataArray)
+        /// <summary>
+        /// Обирає об'єкт JSON серед купи який підходить під умови (певний ключ має певне значення).
+        /// </summary>
+        /// <param name="jsonArray">Список json об'єктів черед яких буде шукатись підходящий.</param>
+        /// <param name="key">Ключ в json об'єктах у якому буде шукатись значення.</param>
+        /// <param name="value">Потрібне значення ключа.</param>
+        /// <returns>Перший JSON об'єкт який має значення <paramref name="value"/> в ключі <paramref name="key"/>.</returns>
+        private JObject FindSuitableJsonObject(JArray jsonArray, string key, string value)
+        {
+            JObject searchResult = jsonArray.Children<JObject>().FirstOrDefault(obj => obj.SelectToken(key)?.ToString() == value); // За допомогою linq запиту шукається перший підходящий об'єкт json, а якщо не знаходиться повертається null
+
+            if (searchResult != null) // Якщо об'єкт знайшовся, метод припиняє роботу і повертає цей об'єкт
             {
-                if (json["addresstype"].ToString() == "road" || json["addresstype"].ToString() == "highway")
-                {
-                    init.Add(jsonDataArray.IndexOf(json));
-                }
+                return searchResult;
             }
-            for (int i = 0; i < init.Count; i++)
-            {
-                switch (jsonDataArray[init[i]]["type"].ToString())
-                {
-                    case "primary":
-                        return (JObject)jsonDataArray[i];
-                    case "trunk":
-                        temporaryPriority = 5;
-                        break;
-                    case "secondary":
-                        temporaryPriority = 4;
-                        break;
-                    case "bus_stop":
-                        temporaryPriority = 3;
-                        break;
-                    case "residential":
-                        temporaryPriority = 2;
-                        break;
-                    case "tertiary":
-                        temporaryPriority = 1;
-                        break;
-                }
-                if (temporaryPriority > priority)
-                {
-                    priority = temporaryPriority;
-                    position = i;
-                }
-            }
-            if (position == -1)
-            {
-                MessageBox.Show("Не було знайдено підходячого варіанту", "Запит", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return null;
-            }
-            return (JObject)jsonDataArray[position];
+            return new JObject(); // Якщо об'єкт не знаходиться, повертається пустий об'єкт JSON ({})
         }
     }
 }

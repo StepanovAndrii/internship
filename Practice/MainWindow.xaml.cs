@@ -12,7 +12,8 @@ namespace Practice
         public MainWindow()
         {
             InitializeComponent();
-            HttpApiService apiService = HttpApiService.CreateInstance("https://csharpindepth.com/");
+            HttpApiService apiService = HttpApiService.CreateInstance("https://nominatim.openstreetmap.org");
+            apiService.SendRequest("Україна", "Київ", "Солом'янська", "Круте місце");
         }
     }
 }
