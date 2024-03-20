@@ -1,30 +1,22 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Net;
-
-//using System.Device.Location
 
 using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsPresentation;
 using System;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Text.Json;
 using Practice.API;
-using System.Data.Common;
+using Practice.Models;
 
 namespace Practice
 {
     public partial class MainWindow : Window
     {
-        List<CPoint> List = new List<CPoint>();
+        private readonly List<CPoint> List = new List<CPoint>();
 
         public MainWindow()
         {
@@ -32,9 +24,7 @@ namespace Practice
             HttpApiService.Instance.BaseUrl = "https://nominatim.openstreetmap.org";
             HttpApiService.Instance.AddRequestParameter("format", "json");
             HttpApiService.Instance.AddRequestParameter("addressdetails", "0");
-            HttpApiService.Instance.PutOrEditData("Україна", "Київ", "Миколи Міхновського", "ДТП на ній");
-            HttpApiService.Instance.AddSearchRequestParameter();
-            HttpApiService.Instance.SendRequest("Practice", 1.0, "WPF");
+            HttpApiService.Instance.AddRequestParameter("q", "");
         }
 
         private void map_load(object sender, EventArgs e)
@@ -58,51 +48,39 @@ namespace Practice
             GMapProvider.WebProxy = WebRequest.GetSystemWebProxy();
             GMapProvider.WebProxy.Credentials = CredentialCache.DefaultCredentials;
 
-            GMap.NET.WindowsPresentation.GMapMarker marker = new GMap.NET.WindowsPresentation.GMapMarker(new PointLatLng(50.4015971, 30.6237091));
+            GMapMarker marker = new GMapMarker(new PointLatLng(50.4015971, 30.6237091));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            HttpApiService.Instance.PutOrEditData(country.Text, town.Text, street.Text, Comment.Text);
+            HttpApiService.Instance.AddSearchRequestParameter();
+            HttpApiService.Instance.SendRequest("Practice", 1.0, "WPF");
+        }
 
-            string[] ArrayOfStringWithCoor = File.ReadAllLines(@"places.txt", Encoding.GetEncoding(1251));
-            for (int i = 0; i < ArrayOfStringWithCoor.Length; i++)
-            {
-                string[] OneStringWithCoor = ArrayOfStringWithCoor[i].Split(new char[] { ';' });
-                List.Add(new CPoint(Convert.ToDouble(OneStringWithCoor[0]), Convert.ToDouble(OneStringWithCoor[1])));
-            }
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            IEnumerable<Accident> accidents = await DbController.GetAllAccidents();
 
-            for (int i = 0; i < List.Count; i++)
+            foreach (Accident accident in accidents)
             {
-                GMapMarker marker = new GMapMarker(new PointLatLng(List[i].x, List[i].y));
-                marker.Shape = new Image
+                GMapMarker marker = new GMapMarker(new PointLatLng(accident.Latitude, accident.Longitude))
                 {
-                    Source = new BitmapImage(new Uri("images/marker.png", UriKind.Relative)),
-                    ToolTip = $"#{i + 1} ДТП",
-                    Visibility = Visibility.Visible
+                    Shape = new Image
+                    {
+                        Source = new BitmapImage(new Uri("images/marker.png", UriKind.Relative)),
+                        ToolTip = $"ДТП: {accident.Description}",
+                        Visibility = Visibility.Visible
+                    }
                 };
                 gmap.Markers.Add(marker);
             }
         }
 
-        //private async void Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    // Создаем маркер и добавляем его на карту
-        //    GMap.NET.WindowsPresentation.GMapMarker marker = new GMap.NET.WindowsPresentation.GMapMarker(new PointLatLng(lat, lon));
-        //    // Здесь вы можете настроить маркер, добавить его на карту и т.д.
-        //    BitmapImage bitmap = new BitmapImage();
-        //    bitmap.BeginInit();
-        //    bitmap.UriSource = new Uri(@"C:\Users\anrub\Desktop\учеба 2.0\Практика\Задание\Practice\images\marker.png");
-        //    bitmap.EndInit();
-
-        //    Image image = new Image();
-        //    image.Source = bitmap;
-        //    marker.Shape = image;
-        //    gmap.Markers.Add(marker);
-        //}
-
-        private void Button_Click3(object sender, RoutedEventArgs e)
+        private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-
+            gmap.Markers.Clear();
+            DbController.ClearAllAccidents();
         }
     }
 
@@ -120,23 +98,3 @@ namespace Practice
         }
     }
 }
-
-//BitmapImage bitmap = new BitmapImage();
-//bitmap.BeginInit();
-//bitmap.UriSource = new Uri(@"C:\Users\anrub\Desktop\учеба 2.0\Практика\Задание\Practice\images\marker.png");
-//bitmap.EndInit();
-
-//Image image = new Image();
-//image.Source = bitmap;
-//marker.Shape = image;
-////marker.Offset = new Point(image.Width / 2, -image.Height);
-
-//gmap.Markers.Add(marker);
-
-//marker.Shape = new Image
-//{
-//    Source = new BitmapImage(new Uri(@"C:\Users\anrub\Desktop\учеба 2.0\Практика\Задание\Practice\images\marker.png")),
-//    ToolTip = "#1 ДТП",
-//    Visibility = Visibility.Visible
-//};
-//gmap.Markers.Add(marker);

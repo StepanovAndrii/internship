@@ -162,7 +162,7 @@ namespace Practice.API
                 DialogManager.Notify("Дані відсутні.", MessageBoxImage.Error, MessageBoxButton.OK);
             }
             else
-                _requestParameters.Add("q", $"{Country} {City} {Street}");
+                _requestParameters["q"] = $"{Country} {City} {Street}";
         }
 
         // Приватні методи

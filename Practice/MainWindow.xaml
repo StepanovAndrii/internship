@@ -8,7 +8,6 @@
         mc:Ignorable="d"
        Title="Practice" Height="700" Width="1000">
     <Window.Resources>
-        <!-- Стиль для скругленных TextBox -->
         <Style TargetType="TextBox">
             <Setter Property="Template">
                 <Setter.Value>
@@ -21,12 +20,14 @@
             </Setter>
         </Style>
 
-        <!-- Стиль для скругленной кнопки -->
         <Style TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="5">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -43,16 +44,16 @@
             <Setter Property="Padding" Value="5"/>
         </Style>
     </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
-            <!-- Левая колонка для заполнения -->
+
             <ColumnDefinition Width="Auto"/>
-            <!-- Правая колонка для карты -->
             <ColumnDefinition Width="*"/>
+
         </Grid.ColumnDefinitions>
 
-        <!-- StackPanel для выравнивания элементов по центру -->
-        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,41,0,0" Height="558" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2">
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,12,0,0" Height="656" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2">
             <StackPanel.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -61,18 +62,20 @@
                     <TranslateTransform X="-0.427"/>
                 </TransformGroup>
             </StackPanel.RenderTransform>
-            <!-- Ваши ячейки для заполнения -->
-            <TextBlock Text="АВАРІЇ" HorizontalAlignment="Center" FontSize="24" Margin="0,35,0,20"/>
+
+            <TextBlock Text="АВАРІЇ" HorizontalAlignment="Center" FontSize="24" Margin="0,0,0,20"/>
             <TextBox x:Name="country" Margin="10" Width="250" Height="75"/>
             <TextBox x:Name="town" Margin="10" Width="250" Height="75"/>
             <TextBox x:Name="street" Margin="10" Width="250" Height="75"/>
             <TextBox x:Name="Comment" Margin="10" Width="250" Height="75"/>
 
-            <!-- Кнопка "Додати" -->
-            <Button Content="Додати" Margin="10" Width="250" Height="75" Click="Button_Click3" />
+            <Button Content="Додати" Margin="10" Width="250" Height="75" Click="Button_Click"/>
+            <StackPanel Orientation="Horizontal" Margin="12,12,0,0">
+                <Button Content="Оновити" Width="120" Height="75" Click="Button_Click_1"/>
+                <Button Content="Видалити все" Margin="10" Width="120" Height="75" Click="Button_Click_2"/>
+            </StackPanel>
         </StackPanel>
 
-        <!-- Элемент управления GMapControl -->
-        <gmaps:GMapControl x:Name="gmap" Loaded="map_load" Grid.Column="1" HorizontalAlignment="Right" Width="650" Height="550" Margin="0,0,30,0"/>
+            <gmaps:GMapControl x:Name="gmap" Loaded="map_load" Grid.Column="1" HorizontalAlignment="Right" Width="650" Height="550" Margin="0,0,30,0"/>
     </Grid>
 </Window>

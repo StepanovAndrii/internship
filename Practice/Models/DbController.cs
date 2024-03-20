@@ -69,6 +69,7 @@ internal static class DbController
             // Видаляємо всі дані про аварії з бази даних
             database.Accidents.RemoveRange(database.Accidents);
             await database.SaveChangesAsync();
+            DialogManager.Notify("Дані були успішно видалені!", MessageBoxImage.Information, MessageBoxButton.OK);
         }
     }
 }
