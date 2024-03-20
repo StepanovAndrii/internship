@@ -16,8 +16,6 @@ namespace Practice
 {
     public partial class MainWindow : Window
     {
-        private readonly List<CPoint> List = new List<CPoint>();
-
         public MainWindow()
         {
             InitializeComponent();
@@ -47,8 +45,6 @@ namespace Practice
 
             GMapProvider.WebProxy = WebRequest.GetSystemWebProxy();
             GMapProvider.WebProxy.Credentials = CredentialCache.DefaultCredentials;
-
-            GMapMarker marker = new GMapMarker(new PointLatLng(50.4015971, 30.6237091));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -98,20 +94,6 @@ namespace Practice
                 tb.Text = "Введіть дані";
                 tb.Foreground = System.Windows.Media.Brushes.Gray;
             }
-        }
-    }
-
-    public class CPoint
-    {
-        public double x { get; set; }
-        public double y { get; set; }
-
-        public CPoint() { }
-
-        public CPoint(double _x, double _y)
-        {
-            x = _x;
-            y = _y;
         }
     }
 }
