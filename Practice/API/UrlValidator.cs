@@ -2,6 +2,9 @@
 
 namespace Practice
 {
+    /// <summary>
+    /// Клас, який надає функціональність перевірки правильності формату URL.
+    /// </summary>
     internal static class UrlValidator
     {
         /// <summary>

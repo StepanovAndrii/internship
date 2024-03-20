@@ -38,6 +38,10 @@ namespace Practice.API
         }
 
         // Властивості
+
+        /// <summary>
+        /// Базовий URL для HTTP-запитів.
+        /// </summary>
         public string BaseUrl
         {
             get => _baseUrl;
@@ -45,17 +49,34 @@ namespace Practice.API
             {
                 if (!UrlValidator.ValidateURL(value))
                 {
-                    DialogManager.NotifyExit("Неправильний формат url.", MessageBoxImage.Error, MessageBoxButton.OK);
+                    DialogManager.NotifyExit("Неправильний формат URL.", MessageBoxImage.Error, MessageBoxButton.OK);
                 }
                 _baseUrl = value;
             }
         }
+
+        /// <summary>
+        /// Країна, що використовується для HTTP-запитів.
+        /// </summary>
         public string Country { get; private set; }
+
+        /// <summary>
+        /// Місто, що використовується для HTTP-запитів.
+        /// </summary>
         public string City { get; private set; }
+
+        /// <summary>
+        /// Вулиця, що використовується для HTTP-запитів.
+        /// </summary>
         public string Street { get; private set; }
+
+        /// <summary>
+        /// Опис, що використовується для HTTP-запитів.
+        /// </summary>
         public string Description { get; private set; }
 
-        // Метод для встановлення даних
+        // Методи
+
         /// <summary>
         /// Встановлює дані для відправки запиту HTTP.
         /// </summary>
@@ -71,15 +92,14 @@ namespace Practice.API
             Description = description;
         }
 
-        // Метод для відправки HTTP-запиту
         /// <summary>
-        /// Відправляє HTTP-запит.
+        /// Відправляє HTTP-запит з використанням вказаного агента користувача.
         /// </summary>
         public async void SendRequest(string userAgentProduct, double userAgentProductVersion, string userAgentComment)
         {
             if (string.IsNullOrEmpty(BaseUrl))
             {
-                DialogManager.NotifyExit("Базовий url відсутній.", MessageBoxImage.Error, MessageBoxButton.OK);
+                DialogManager.NotifyExit("Базовий URL відсутній.", MessageBoxImage.Error, MessageBoxButton.OK);
             }
 
             using (HttpClient httpClient = new HttpClient())
@@ -113,10 +133,8 @@ namespace Practice.API
             }
         }
 
-
-        // Метод для додавання параметра запиту
         /// <summary>
-        /// Додає параметр запиту.
+        /// Додає параметр до HTTP-запиту.
         /// </summary>
         /// <param name="key">Ключ параметра.</param>
         /// <param name="value">Значення параметра.</param>
@@ -125,11 +143,18 @@ namespace Practice.API
             _requestParameters[key] = value;
         }
 
+        /// <summary>
+        /// Додає піддиректорію до HTTP-запиту.
+        /// </summary>
+        /// <param name="subdirectory">Піддиректорія.</param>
         public void AddRequestSubdirectory(string subdirectory)
         {
             _requestSubdirecories.Add(subdirectory);
         }
 
+        /// <summary>
+        /// Додає параметр пошуку до HTTP-запиту на основі встановлених даних про вулицю.
+        /// </summary>
         public void AddSearchRequestParameter()
         {
             if (string.IsNullOrEmpty(Street))
@@ -139,7 +164,12 @@ namespace Practice.API
             else
                 _requestParameters.Add("q", $"{Country} {City} {Street}");
         }
-        // Метод для створення URI запиту
+
+        // Приватні методи
+
+        /// <summary>
+        /// Створює URI для HTTP-запиту на основі встановлених параметрів.
+        /// </summary>
         private Uri CreateRequestURI()
         {
             UriBuilder uriBuilder = new UriBuilder(BaseUrl);
@@ -150,13 +180,16 @@ namespace Practice.API
             return uriBuilder.Uri;
         }
 
-        // Метод для обробки успішної відповіді
+        /// <summary>
+        /// Обробляє успішну відповідь на HTTP-запит.
+        /// </summary>
+        /// <param name="jsonResponse">JSON-відповідь.</param>
         private async Task HandleSuccessfulResponse(string jsonResponse)
         {
             JArray jsonList = JArray.Parse(jsonResponse);
 
             JObject priorityObject = FindHighestPriorityObjectByValues(jsonList, "type", _suitableKeyValues);
-            if(priorityObject.HasValues)
+            if (priorityObject.HasValues)
             {
                 await DbController.AddAccident(priorityObject, Description);
             }
@@ -166,7 +199,13 @@ namespace Practice.API
             }
         }
 
-        // Метод для пошуку об'єкта з найвищим пріоритетом за значеннями
+        /// <summary>
+        /// Знаходить об'єкт з найвищим пріоритетом за заданими значеннями.
+        /// </summary>
+        /// <param name="jsonArray">Масив JSON-об'єктів.</param>
+        /// <param name="key">Ключ, за яким шукати значення.</param>
+        /// <param name="values">Список значень, за якими шукати.</param>
+        /// <returns>Об'єкт JSON з найвищим пріоритетом.</returns>
         private JObject FindHighestPriorityObjectByValues(JArray jsonArray, string key, IEnumerable<string> values)
         {
             foreach (var value in values)
@@ -178,7 +217,13 @@ namespace Practice.API
             return new JObject();
         }
 
-        // Метод для пошуку відповідного об'єкта JSON
+        /// <summary>
+        /// Знаходить відповідний JSON-об'єкт за значенням ключа.
+        /// </summary>
+        /// <param name="jsonArray">Масив JSON-об'єктів.</param>
+        /// <param name="key">Ключ для пошуку.</param>
+        /// <param name="value">Значення ключа для пошуку.</param>
+        /// <returns>Відповідний JSON-об'єкт або порожній об'єкт, якщо не знайдено.</returns>
         private JObject FindSuitableJsonObject(JArray jsonArray, string key, string value)
         {
             return jsonArray.Children<JObject>().FirstOrDefault(obj => obj.SelectToken(key)?.ToString() == value) ?? new JObject();

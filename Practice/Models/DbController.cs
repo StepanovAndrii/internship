@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
-using Practice.API;
 using Practice;
+using Practice.API;
 using Practice.Models;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -24,7 +24,7 @@ internal static class DbController
                 double lon = JsonDoubleConverter.Convert(accidentJson["lon"].ToString());
                 if (!(double.IsNaN(lon) || double.IsNaN(lat)))
                 {
-               
+                    // Перевіряємо, чи вже існує аварія з такими ж координатами в базі даних
                     bool alreadyExist = await database.Accidents.AnyAsync(accident => accident.Longitude == lon && accident.Latitude == lat);
                     if (alreadyExist)
                     {
@@ -33,7 +33,7 @@ internal static class DbController
                     else
                     {
                         string name = accidentJson["display_name"].ToString();
-
+                        // Створюємо новий об'єкт Accident та додаємо його до бази даних
                         Accident accident = new Accident(name, description, lon, lat);
                         database.Accidents.Add(accident);
                         await database.SaveChangesAsync();
@@ -44,7 +44,10 @@ internal static class DbController
         }
     }
 
-    // Отримує всі аварії з бази даних.
+    /// <summary>
+    /// Отримує всі аварії з бази даних.
+    /// </summary>
+    /// <returns>Список всіх аварій.</returns>
     public static async Task<IEnumerable<Accident>> GetAllAccidents()
     {
         using (var database = new AccidentContext())
@@ -53,13 +56,17 @@ internal static class DbController
         }
     }
 
-    // Очищає всі дані про аварії з бази даних.
+    /// <summary>
+    /// Очищає всі дані про аварії з бази даних.
+    /// </summary>
     public static async Task ClearAllAccidents()
     {
+        // Перевіряємо, чи користувач підтверджує видалення всіх даних
         if (!DialogManager.Notify("Ви впевнені, що хочете видалити всі дані з бази даних?", MessageBoxImage.Question, MessageBoxButton.YesNo)) return;
 
         using (var database = new AccidentContext())
         {
+            // Видаляємо всі дані про аварії з бази даних
             database.Accidents.RemoveRange(database.Accidents);
             await database.SaveChangesAsync();
         }
