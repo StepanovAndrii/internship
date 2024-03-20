@@ -64,10 +64,10 @@
             </StackPanel.RenderTransform>
 
             <TextBlock Text="АВАРІЇ" HorizontalAlignment="Center" FontSize="24" Margin="0,0,0,20"/>
-            <TextBox x:Name="country" Margin="10" Width="250" Height="75"/>
-            <TextBox x:Name="town" Margin="10" Width="250" Height="75"/>
-            <TextBox x:Name="street" Margin="10" Width="250" Height="75"/>
-            <TextBox x:Name="Comment" Margin="10" Width="250" Height="75"/>
+            <TextBox x:Name="country" Text="Країна" Margin="10" Width="250" Height="75" Foreground="Gray" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+            <TextBox x:Name="town" Text="Місто" Margin="10" Width="250" Height="75" Foreground="Gray" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+            <TextBox x:Name="street" Text="Вулиця" Margin="10" Width="250" Height="75" Foreground="Gray" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+            <TextBox x:Name="Comment"  Text="Коментар" Margin="10" Width="250" Height="75" Foreground="Gray" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
 
             <Button Content="Додати" Margin="10" Width="250" Height="75" Click="Button_Click"/>
             <StackPanel Orientation="Horizontal" Margin="12,12,0,0">

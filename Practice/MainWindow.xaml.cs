@@ -82,6 +82,23 @@ namespace Practice
             gmap.Markers.Clear();
             DbController.ClearAllAccidents();
         }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            tb.Text = "";
+            tb.Foreground = System.Windows.Media.Brushes.Black;
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            if (string.IsNullOrWhiteSpace(tb.Text))
+            {
+                tb.Text = "Введіть дані";
+                tb.Foreground = System.Windows.Media.Brushes.Gray;
+            }
+        }
     }
 
     public class CPoint
