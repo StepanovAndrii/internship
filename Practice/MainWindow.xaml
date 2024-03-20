@@ -7,14 +7,14 @@
         xmlns:local="clr-namespace:Practice"
         mc:Ignorable="d"
        Title="Practice" Height="700" Width="1000">
-     <Window.Resources>
+    <Window.Resources>
         <!-- Стиль для скругленных TextBox -->
         <Style TargetType="TextBox">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border BorderBrush="#B0D7FA" BorderThickness="2" CornerRadius="5">
-                            
+                            <ScrollViewer x:Name="PART_ContentHost"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -26,12 +26,21 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border BorderBrush="#B0D7FA" BorderThickness="2" CornerRadius="5">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="LightGray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="#B0D7FA"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="5"/>
         </Style>
     </Window.Resources>
     <Grid>
@@ -54,14 +63,13 @@
             </StackPanel.RenderTransform>
             <!-- Ваши ячейки для заполнения -->
             <TextBlock Text="АВАРІЇ" HorizontalAlignment="Center" FontSize="24" Margin="0,35,0,20"/>
-            <TextBox x:Name="country" Text="Країна" Margin="10" Width="250" Height="75"/>
-            <TextBox Margin="10" Width="250" Height="75"/>
-            <TextBox Margin="10" Width="250" Height="75"/>
-            <TextBox Margin="10" Width="250" Height="75"/>
-            
+            <TextBox x:Name="country" Margin="10" Width="250" Height="75"/>
+            <TextBox x:Name="town" Margin="10" Width="250" Height="75"/>
+            <TextBox x:Name="street" Margin="10" Width="250" Height="75"/>
+            <TextBox x:Name="Comment" Margin="10" Width="250" Height="75"/>
 
             <!-- Кнопка "Додати" -->
-            <Button Content="Додати" Margin="10" Width="250" Height="75"/>
+            <Button Content="Додати" Margin="10" Width="250" Height="75" Click="Button_Click3" />
         </StackPanel>
 
         <!-- Элемент управления GMapControl -->

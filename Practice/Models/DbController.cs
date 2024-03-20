@@ -59,7 +59,7 @@ internal static class DbController
     /// <summary>
     /// Очищає всі дані про аварії з бази даних.
     /// </summary>
-    public static async Task ClearAllAccidents()
+    public static async void ClearAllAccidents()
     {
         // Перевіряємо, чи користувач підтверджує видалення всіх даних
         if (!DialogManager.Notify("Ви впевнені, що хочете видалити всі дані з бази даних?", MessageBoxImage.Question, MessageBoxButton.YesNo)) return;
