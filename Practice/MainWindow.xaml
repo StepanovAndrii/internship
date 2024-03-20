@@ -6,12 +6,65 @@
         xmlns:gmaps="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
         xmlns:local="clr-namespace:Practice"
         mc:Ignorable="d"
-        Title="Practice" Height="1000" Width="1000">
-    <Grid x:Name="Grid1" Background="PeachPuff">
-        <gmaps:GMapControl x:Name="gmap" Loaded="map_load" Margin="0,92,0,10"/>
-        <Button Content="Отобразить" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="122" Height="49" Click="Button_Click"/>
-        <Button Content="Убрать" HorizontalAlignment="Left" Margin="137,10,0,0" VerticalAlignment="Top" Width="122" Height="49" Click="Button_Click_1"/>
-        <TextBox x:Name="StreetName" Margin="0,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="122" Height="49" />
-        <Label x:Name="CoorOfStreet" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,147,0" Width="580" Height="49" Background="White"/>
+       Title="Practice" Height="700" Width="1000">
+     <Window.Resources>
+        <!-- Стиль для скругленных TextBox -->
+        <Style TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border BorderBrush="#B0D7FA" BorderThickness="2" CornerRadius="5">
+                            
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для скругленной кнопки -->
+        <Style TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderBrush="#B0D7FA" BorderThickness="2" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!-- Левая колонка для заполнения -->
+            <ColumnDefinition Width="Auto"/>
+            <!-- Правая колонка для карты -->
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- StackPanel для выравнивания элементов по центру -->
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,41,0,0" Height="558" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2">
+            <StackPanel.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleX="-0.07"/>
+                    <RotateTransform/>
+                    <TranslateTransform X="-0.427"/>
+                </TransformGroup>
+            </StackPanel.RenderTransform>
+            <!-- Ваши ячейки для заполнения -->
+            <TextBlock Text="АВАРІЇ" HorizontalAlignment="Center" FontSize="24" Margin="0,35,0,20"/>
+            <TextBox x:Name="country" Text="Країна" Margin="10" Width="250" Height="75"/>
+            <TextBox Margin="10" Width="250" Height="75"/>
+            <TextBox Margin="10" Width="250" Height="75"/>
+            <TextBox Margin="10" Width="250" Height="75"/>
+            
+
+            <!-- Кнопка "Додати" -->
+            <Button Content="Додати" Margin="10" Width="250" Height="75"/>
+        </StackPanel>
+
+        <!-- Элемент управления GMapControl -->
+        <gmaps:GMapControl x:Name="gmap" Loaded="map_load" Grid.Column="1" HorizontalAlignment="Right" Width="650" Height="550" Margin="0,0,30,0"/>
     </Grid>
 </Window>

@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using System.Net;
 
 //using System.Device.Location
 
@@ -10,7 +15,6 @@ using GMap.NET.MapProviders;
 using GMap.NET.WindowsPresentation;
 using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
@@ -39,13 +43,12 @@ namespace Practice
         public MainWindow()
         {
             InitializeComponent();
-            HttpApiService.Instance.BaseUrl = "https://nominatim.openstreetmap.org";
-            HttpApiService.Instance.AddRequestParameter("format", "json");
-            HttpApiService.Instance.AddRequestParameter("addressdetails", "0");
-            HttpApiService.Instance.PutOrEditData("Україна", "Київ", "Миколи Міхновського", "ДТП на ній");
-            HttpApiService.Instance.AddSearchRequestParameter();
-            HttpApiService.Instance.SendRequest("Practice", 1.0, "WPF");
-        }        
+            //HttpApiService.Instance.BaseUrl = "https://nominatim.openstreetmap.org";
+            //HttpApiService.Instance.AddRequestParameter("format", "json");
+            //HttpApiService.Instance.AddRequestParameter("addressdetails", "0");
+            //HttpApiService.Instance.PutOrEditData("Україна", "Київ", "Миколи Міхновського", "ДТП на ній");
+            //HttpApiService.Instance.AddSearchRequestParameter();
+            //HttpApiService.Instance.SendRequest("Practice", 1.0, "WPF");
         }
 
         private void map_load(object sender, EventArgs e)
@@ -129,7 +132,7 @@ namespace Practice
             string coordinatesString = string.Join("\n", coordinatesList);
 
             // Обновляем содержимое Label
-            CoorOfStreet.Content = coordinatesString;
+            //CoorOfStreet.Content = coordinatesString;
 
             foreach (string coordinates in coordinatesList)
             {
